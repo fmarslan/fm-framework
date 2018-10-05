@@ -6,14 +6,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.function.Function;
 
+import com.fmarslan.framework.exception.ProxyException;
 import com.fmarslan.framework.model.InvokeContext;
-import com.fmarslan.framework.model.ResponseContext;
+
+import javassist.util.proxy.ProxyFactory;
 
 public class ProxyService<SERVICE> implements InvocationHandler {
 
 	SERVICE instance;
 	SERVICE proxyInstance;
 	Class<SERVICE> clazz;
+	Class<SERVICE> proxyClazz;
 	Proxy proxy;
 
 	public Object invoke(Object proxy, Method method, Object[] args)
@@ -25,11 +28,17 @@ public class ProxyService<SERVICE> implements InvocationHandler {
 	}
 
 	@SuppressWarnings("unchecked")
-	public ProxyService(SERVICE instance) {
-		this.clazz = (Class<SERVICE>) instance.getClass();
-		this.instance = instance;
+	public ProxyService(Class<SERVICE> clazz) {
+		try {
+		this.clazz = clazz;
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setSuperclass(this.clazz);
+		this.proxyClazz = (Class<SERVICE>) proxyFactory.createClass();
+		this.instance = this.proxyClazz.newInstance();
 //		this.proxyInstance = (SERVICE) Proxy.newProxyInstance(this.clazz.getClassLoader(), this.clazz.getGenericInterfaces(), this);
-		
+		}catch( IllegalAccessException | InstantiationException ex) {
+			throw new ProxyException(ex);
+		}
 		
 	}
 

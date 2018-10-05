@@ -6,4 +6,29 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>fm-framework</name>
   <url>http://fmarslan.com</url>
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+     <resource>
+       <directory>src/main/resources</directory>
+     </resource>
+   </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.javassist</groupId>
+  		<artifactId>javassist</artifactId>
+  		<version>3.23.1-GA</version>
+  	</dependency>
+  </dependencies>
 </project>
