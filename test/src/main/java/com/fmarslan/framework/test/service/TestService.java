@@ -10,9 +10,11 @@ public class TestService {
 		return testService;
 	}
 	
-	public String writeMessage(String a) {		
-		System.out.println(a);
-		return "method succeded";		
+	public String writeMessage(String b) {
+		String a= "ddffsd";
+		a+="sdgfsdfsdf";
+		a+="dsfsdfsdf";
+		return a + "dsfsdfsdf";
 	}
 	
 }

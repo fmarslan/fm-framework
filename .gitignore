@@ -1,11 +1,7 @@
-<<<<<<< HEAD
+
 /target/
 .classpath
-.project
 /.settings/
-=======
-.classpath
 .project
-.settings
 target
->>>>>>> d1e3125eb8af5dde96f5cb4a16a7cb2dc80f868e
+.settings/

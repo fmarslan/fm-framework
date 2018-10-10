@@ -4,13 +4,19 @@
   <artifactId>fm-framework-test</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+     <resource>
+       <directory>src/main/resources</directory>
+     </resource>
+   </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
         <configuration>
-          <release>9</release>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
     </plugins>
@@ -20,6 +26,11 @@
   		<groupId>fmarslan.com</groupId>
   		<artifactId>fm-framework</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.javassist</groupId>
+  		<artifactId>javassist</artifactId>
+  		<version>3.23.1-GA</version>
   	</dependency>
   </dependencies>
 </project>

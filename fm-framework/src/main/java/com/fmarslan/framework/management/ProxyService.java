@@ -19,69 +19,102 @@ import com.fmarslan.framework.shared.Function;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
-public class ProxyService<SERVICE> implements InvocationHandler {
+public class ProxyService<SERVICE> {
 
+	final ProxyFactory proxyFactory;
+	
+	
 	SERVICE instance;
 	SERVICE proxyInstance;
 	Class<SERVICE> clazz;
 	Class<SERVICE> proxyClazz;
 	Proxy proxy;
+	Constructor<?> ctor;
 
-	public Object invoke(Object proxy, Method method, Object[] args)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		InvokeContext<?, ?> context = InvokeContext.createContext(method.getReturnType(), instance, method, args);
-		FMApplication.current.invoke(context);
-		Object result = method.invoke(instance, args);
-		return result;
-	}
+//	private class Handler implements InvocationHandler {
+//
+//		
+//	}
 
 	@SuppressWarnings("unchecked")
 	public ProxyService(Class<SERVICE> clazz) {
+		this.clazz = clazz;
+		proxyFactory = new ProxyFactory();
+		proxyFactory.setSuperclass(this.clazz);
+		proxyFactory.setUseCache(true);
+		
+		Class<SERVICE> proxyClazz = (Class<SERVICE>) proxyFactory.createClass();
 		try {
-			this.clazz = clazz;
-			ProxyFactory proxyFactory = new ProxyFactory();
-			proxyFactory.setSuperclass(this.clazz);
-			this.proxyClazz = (Class<SERVICE>) proxyFactory.createClass();
-			Constructor<?> ctor = this.proxyClazz.getConstructor();
-			this.instance = (SERVICE) ctor.newInstance();
-			((javassist.util.proxy.Proxy)this.instance).setHandler(new MethodHandler() {
-				
-				@Override
-				public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			});
-			
-		} catch (IllegalAccessException | InstantiationException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-			throw new ProxyException(ex);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public ProxyService(SERVICE instance) {
-		try {
-			this.clazz = (Class<SERVICE>) instance.getClass();
-			this.instance = instance;
-		} catch (SecurityException ex) {
-			throw new ProxyException(ex);
+			ctor = proxyClazz.getConstructor();
+			this.instance = clazz.newInstance();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		//this.instance = createProxy();
+ catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private SERVICE createProxy() {
+			try {
+				final SERVICE ins = this.instance;
+				SERVICE instance = (SERVICE) ctor.newInstance();
+				((javassist.util.proxy.Proxy) instance).setHandler(new MethodHandler() {
+					
+					private InvokeContext<?, ?> context;
+					
+					public InvokeContext<?, ?> getContext() {
+						return context;
+					}
+					
+					@Override
+					public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+//						context = InvokeContext.createContext(thisMethod.getReturnType(), instance, thisMethod, args);
+//						FMApplication.current.invoke(context);
+						Object result = thisMethod.invoke(ins, args);
+//						context.getResponse().setData(result);
+						return result;
+					}
+					
+				});
+				return instance;
+			} catch (SecurityException | InstantiationException | InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+				System.out.println("Denememeee");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+	}
 	
 	
-	
-	
-	
-	
+//	@SuppressWarnings("unchecked")
+//	public ProxyService(SERVICE instance) {
+//		try {
+//			this.clazz = (Class<SERVICE>) instance.getClass();
+//			this.instance = instance;
+//		} catch (SecurityException ex) {
+//			throw new ProxyException(ex);
+//		}
+//	}
+
 	public String run(Function<String,SERVICE> function) {
 		try {
-			
-			System.out.println(function.getClass());
-			System.out.println(function.getMethod());			
+
+//			System.out.println(function.getClass());
+//			System.out.println(function.getMethod());
 //			System.out.println(((Serializable)function).getClass().getSuperclass());
-			return function.invoke(this.instance);
+			
+			return function.invoke(createProxy());
 
 		} catch (Throwable e) {
 			throw new RuntimeException(e);

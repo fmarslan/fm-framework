@@ -1,6 +1,5 @@
 package com.fmarslan.framework.test;
 
-import com.fmarslan.framework.log.Logger;
 import com.fmarslan.framework.management.FMApplication;
 import com.fmarslan.framework.management.ProxyService;
 import com.fmarslan.framework.middlewares.ExceptionMiddleware;
@@ -13,13 +12,23 @@ public class ApplicationTest {
 	public static void main(String[] args) {
 		FMApplication.build(new LoggingMiddleware()).build(new ExceptionMiddleware()).build(new InvokingMiddleware());
 
-		ProxyService<TestService> service = new ProxyService<TestService>(new TestService());
+		ProxyService<TestService> service = new ProxyService<TestService>(TestService.class);
 		TestService ins = new TestService();
 
 		// MethodCall call = new MethodCall(0,null, null, null);
-		String result = service.run((x) -> ins.writeMessage("exp"));
+
+		final long startTime = System.currentTimeMillis();
+		for (int i = 0; i < 2000000; i++) {
+
+			//service.run((x) -> x.writeMessage("exp")); //17000
+			ins.writeMessage("a"); // 17000-17500
+		}
+
+		final long endTime = System.currentTimeMillis();
+		System.out.println("Total execution time: " + (endTime - startTime));
+
 		// Proxy<TestService> p = new Proxy<TestService>(new TestService());
-		Logger.Info(result);
+		//Logger.Info(result);
 	}
 
 	/*
