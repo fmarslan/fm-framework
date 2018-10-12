@@ -12,29 +12,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.function.Supplier;
 
+import com.fmarslan.framework.event.Action;
 import com.fmarslan.framework.exception.ProxyException;
 import com.fmarslan.framework.model.InvokeContext;
-import com.fmarslan.framework.shared.Function;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
 public class ProxyService<SERVICE> {
 
-	final ProxyFactory proxyFactory;
-	
-	
-	SERVICE instance;
+	static ProxyFactory proxyFactory;	
+	SERVICE orgInstance;
 	SERVICE proxyInstance;
 	Class<SERVICE> clazz;
 	Class<SERVICE> proxyClazz;
-	Proxy proxy;
-	Constructor<?> ctor;
-
-//	private class Handler implements InvocationHandler {
-//
-//		
-//	}
 
 	@SuppressWarnings("unchecked")
 	public ProxyService(Class<SERVICE> clazz) {
@@ -107,7 +98,7 @@ public class ProxyService<SERVICE> {
 //		}
 //	}
 
-	public String run(Function<String,SERVICE> function) {
+	public String run(Action<String,SERVICE> function) {
 		try {
 
 //			System.out.println(function.getClass());

@@ -1,16 +1,17 @@
 package com.fmarslan.framework.management;
 
+import com.fmarslan.framework.base.BaseMiddleware;
+import com.fmarslan.framework.event.Handle;
 import com.fmarslan.framework.model.InvokeContext;
-import com.fmarslan.framework.shared.BaseMiddleware;
-import com.fmarslan.framework.shared.ExceptionHandler;
 
 public class FMApplication {
 
 	private static FMApplication application;
-	private static ExceptionHandler handler;
-
+	
 	static BaseMiddleware current;
-
+	private static Handle<?> resultPackager;
+	private static Handle<?> exceptionHandler;
+		
 	private FMApplication() {
 
 	}
@@ -18,7 +19,7 @@ public class FMApplication {
 	static {
 		application = new FMApplication();
 	}
-
+	
 	public static BaseMiddleware build(BaseMiddleware middleware) {
 		if (current == null) {
 			current = middleware;
@@ -28,18 +29,8 @@ public class FMApplication {
 		}
 	}
 
-	public static void setExceptionHandler(ExceptionHandler handler) {
-		FMApplication.handler = handler;
-	}
 
-	public static boolean exceptionHandle(Throwable t, InvokeContext<?,?> context) {
-		if (handler != null) {
-			return handler.handle(t, context);
-		} else
-			return false;
-	}
-
-	public static FMApplication run() {
+	public static FMApplication current() {
 		return application;
 	}
 
@@ -48,4 +39,26 @@ public class FMApplication {
 				.indexOf("-agentlib:jdwp") > 0;
 		return isDebug;
 	}
+	
+	
+
+	public static void setResultPackager(Handle<?> resultPackager) {
+		FMApplication.resultPackager = resultPackager;
+	}
+
+	public static void setExceptionHandler(Handle<?> exceptionHandler) {
+		FMApplication.exceptionHandler = exceptionHandler;
+	}
+	
+	public static Object resultPackage(InvokeContext<?, ?> context) {
+		if (resultPackager != null)
+			return resultPackager.invoke(context);
+		else
+			return context.getResponse().getData();
+	}
+	
+	public static void handleException(InvokeContext<?, ?> context) {		
+		exceptionHandler.invoke(context);		
+	}
+	
 }

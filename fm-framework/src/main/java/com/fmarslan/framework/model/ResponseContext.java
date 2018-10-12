@@ -1,31 +1,30 @@
 package com.fmarslan.framework.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fmarslan.framework.enums.ResponseStatus;
 
-public class ResponseContext<T extends Object> extends HashMap<String, Object> {
+public class ResponseContext<RESULT> implements Serializable {
 
 	private static final long serialVersionUID = -7721803390581576505L;
 
 	private ResponseStatus responseStatus;
-	private Throwable throwable;
 	private Map<String, Object> parameters;
 
-	private T data;
+	private RESULT data;
 
 	public ResponseContext() {
 		parameters = new HashMap<String, Object>();
 	}
 
-	@SuppressWarnings("unchecked")
-	public void setData(Object data) {		
-		this.data = (T)data;
+	public void setData(RESULT data) {		
+		this.data = (RESULT)data;
 	}
 
-	public T getData() {
+	public RESULT getData() {
 		return data;
 	}
 
@@ -41,16 +40,16 @@ public class ResponseContext<T extends Object> extends HashMap<String, Object> {
 		return Collections.unmodifiableMap(parameters);
 	}
 
-	public ResponseContext<T> addParameter(String k, Object v) {
+	public ResponseContext<RESULT> setParameter(String k, Object v) {
 		parameters.put(k, v);
 		return this;
 	}
-
-	public Throwable getThrowable() {
-		return throwable;
+	
+	public Object getParemeter(String key) {
+		return parameters.get(key);
 	}
-
-	public void setThrowable(Throwable throwable) {
-		this.throwable = throwable;
+	
+	public boolean containsKey(String key) {
+		return parameters.containsKey(key);
 	}
 }
