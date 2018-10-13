@@ -1,7 +1,6 @@
 package com.fmarslan.framework.base;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 
 import com.fmarslan.framework.exception.InvokingException;
 import com.fmarslan.framework.management.FMApplication;
@@ -36,7 +35,7 @@ public abstract class BaseMiddleware implements Serializable {
 		INVOKE_PROCESS = FMApplication.addProcess("Invoke Original Method");
 	}
 	
-	public final void invoke(InvokeContext<?> context) {
+	public final void invoke(InvokeContext<?> context){
 		context.startProcess(BEFORE_PROCESS);
 		before(context);
 		context.endProcess(BEFORE_PROCESS);
@@ -45,11 +44,10 @@ public abstract class BaseMiddleware implements Serializable {
 		}else {
 			try {
 				context.startProcess(INVOKE_PROCESS);
-//				context.getRequest().invoke();
-				Object data = context.getRequest().getMethod().invoke(context.getRequest().getService(), context.getRequest().getArgs());
+				Object data = context.getRequest().invoke();
 				context.getResponse().setData(data);
 				context.endProcess(INVOKE_PROCESS);
-			} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+			} catch (IllegalArgumentException e) {
 				throw new InvokingException(e);
 			}
 		}

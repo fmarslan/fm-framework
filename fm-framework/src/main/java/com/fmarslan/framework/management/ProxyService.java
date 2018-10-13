@@ -58,12 +58,10 @@ public class ProxyService<SERVICE> {
 		try {
 			function.invoke(proxyInstance);
 			return FMApplication.resultPackage(context);
-			// return null;
 		} catch (Throwable e) {
 			context.setException(e);
 			FMApplication.handleException(context);
 			return FMApplication.resultPackage(context);
-			// return null;
 		} finally {
 			RequestPool.disposeCurrentRequest();
 			DebugLog.Info("%s request execute %s ms", clazzName, System.currentTimeMillis() - executeTimer);
@@ -77,7 +75,6 @@ public class ProxyService<SERVICE> {
 		try {
 			function.invoke(proxyInstance);
 			return (RESULT) context.getResponse().getData();
-//			return null;
 		} catch (Throwable e) {
 			context.setException(e);
 			FMApplication.handleException(context);

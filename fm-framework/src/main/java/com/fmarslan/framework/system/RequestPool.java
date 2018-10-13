@@ -40,7 +40,6 @@ public class RequestPool implements Serializable {
 	@SuppressWarnings("unchecked")
 	public static <SERVICE> InvokeContext<SERVICE> getContext(long id) {
 		 return (InvokeContext<SERVICE>) pool.get(id);
-//		return (InvokeContext<SERVICE>) obj;
 	}
 
 	public static <SERVICE> InvokeContext<SERVICE> getCurrentContext() {
@@ -50,15 +49,15 @@ public class RequestPool implements Serializable {
 	public static void disposeRequest(InvokeContext<?> context) {
 		context.startProcess(DISPOSE_REQUEST);
 		try {
-			long requestId = context.getRequest().getRequestId();
-			pool.remove(requestId);
+//			long requestId = context.getRequest().getRequestId();
+			pool.remove(context.getRequest().getRequestId());
+		} finally {
+			context.endProcess(DISPOSE_REQUEST);
 			if (FMApplication.isDebug()) {
 				for (Entry<String, Long> item : context.getTimeSheets().entrySet()) {
 					DebugLog.Log(LogType.INFO, "%s : %s", item.getValue(), item.getKey());
 				}
 			}
-		} finally {
-			context.endProcess(DISPOSE_REQUEST);
 		}
 	}
 

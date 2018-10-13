@@ -3,7 +3,6 @@ package com.fmarslan.framework.test;
 import com.fmarslan.framework.log.Logger;
 import com.fmarslan.framework.management.FMApplication;
 import com.fmarslan.framework.management.ProxyService;
-import com.fmarslan.framework.model.ResponseModel;
 import com.fmarslan.framework.test.service.TestService;
 
 public class ApplicationTest {
@@ -25,28 +24,32 @@ public class ApplicationTest {
 		ProxyService<TestService> p = new ProxyService<TestService>(TestService.class);
 		TestService ts = new TestService();
 
-		// p.run(x -> x.writeMessage("proxy"));
+		boolean compare = false;
 
-		for (int in = 0; in < 10; in++) {
+		if (compare == false) {
+			p.run(x -> x.writeMessage("proxy"));
+		} else {
+			for (int in = 0; in < 10; in++) {
 
-			long endTime = System.currentTimeMillis();
+				long endTime = System.nanoTime();
 
-			for (int i = 0; i < 1000000; i++) {
-				ts.writeMessage("original");
-				// p.run(x -> x.writeMessage("proxy"));
+				for (int i = 0; i < 100; i++) {
+					ts.writeMessageForPlain("original");
+					// p.run(x -> x.writeMessage("proxy"));
+				}
+
+				Logger.Info("original Time : %s ", System.nanoTime() - endTime);
+
+				endTime = System.nanoTime();
+
+				for (int i = 0; i < 100; i++) {
+					// ts.writeMessage("original");
+					p.run(x -> x.writeMessage("proxy"));
+				}
+
+				Logger.Info("proxy Time : %s ", System.nanoTime() - endTime);
+
 			}
-
-			Logger.Info("original Time : %s ", System.currentTimeMillis() - endTime);
-
-			endTime = System.currentTimeMillis();
-
-			for (int i = 0; i < 1000000; i++) {
-				// ts.writeMessage("original");
-				p.run(x -> x.writeMessage("proxy"));
-			}
-
-			Logger.Info("proxy Time : %s ", System.currentTimeMillis() - endTime);
-
 		}
 
 	}

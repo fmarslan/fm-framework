@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fmarslan.framework.enums.ResponseStatus;
 import com.fmarslan.framework.event.Action;
@@ -62,13 +63,13 @@ public class InvokeContext<SERVICE> implements Serializable {
 
 	public void startProcess(int key) {
 		if (FMConfiguration.isActiveProcessTimer())
-			timeSheets.put(key, System.currentTimeMillis());
+			timeSheets.put(key, System.nanoTime());
 	}
 
 	public void endProcess(int key) {
 		if (FMConfiguration.isActiveProcessTimer()) {
 			long time = timeSheets.get(key);
-			timeSheets.put(key, System.currentTimeMillis() - time);
+			timeSheets.put(key, System.nanoTime() - time);
 		}
 	}
 	
@@ -79,9 +80,9 @@ public class InvokeContext<SERVICE> implements Serializable {
 
 	public Map<String, Long> getTimeSheets() {
 		HashMap<String, Long> resultMap = new HashMap<>();
-		timeSheets.entrySet().stream().forEach(x->{
+		for(Entry<Integer, Long> x : timeSheets.entrySet()) {
 			resultMap.put(FMApplication.getProcessName(x.getKey()), x.getValue());
-		});
+		}
 		return resultMap;
 	}
 }

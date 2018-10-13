@@ -6,7 +6,7 @@ public class FMConfiguration extends HashMap<String, Object> {
 
 	private static final long serialVersionUID = -328942771967643993L;
 
-	private static boolean activeProcessTimer = false;
+	private static boolean activeProcessTimer = true;
 
 	public static void setActiveProcessTimer(boolean activeProcessTimer) {
 		FMConfiguration.activeProcessTimer = activeProcessTimer;
