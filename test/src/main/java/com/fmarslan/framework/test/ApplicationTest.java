@@ -1,34 +1,54 @@
 package com.fmarslan.framework.test;
 
+import com.fmarslan.framework.log.Logger;
 import com.fmarslan.framework.management.FMApplication;
 import com.fmarslan.framework.management.ProxyService;
-import com.fmarslan.framework.middlewares.ExceptionMiddleware;
-import com.fmarslan.framework.middlewares.InvokingMiddleware;
-import com.fmarslan.framework.middlewares.LoggingMiddleware;
+import com.fmarslan.framework.model.ResponseModel;
 import com.fmarslan.framework.test.service.TestService;
 
 public class ApplicationTest {
 
 	public static void main(String[] args) {
-		FMApplication.build(new LoggingMiddleware()).build(new ExceptionMiddleware()).build(new InvokingMiddleware());
+		FMApplication.Default();
 
-		ProxyService<TestService> service = new ProxyService<TestService>(TestService.class);
-		TestService ins = new TestService();
+		/*
+		 * final long startTime = System.currentTimeMillis(); for (int i = 0; i <
+		 * 2000000; i++) {
+		 * 
+		 * //service.run((x) -> x.writeMessage("exp")); //17000 ins.writeMessage("a");
+		 * // 17000-17500 }
+		 * 
+		 * final long endTime = System.currentTimeMillis();
+		 * System.out.println("Total execution time: " + (endTime - startTime));
+		 */
 
-		// MethodCall call = new MethodCall(0,null, null, null);
+		ProxyService<TestService> p = new ProxyService<TestService>(TestService.class);
+		TestService ts = new TestService();
 
-		final long startTime = System.currentTimeMillis();
-		for (int i = 0; i < 2000000; i++) {
+		// p.run(x -> x.writeMessage("proxy"));
 
-			//service.run((x) -> x.writeMessage("exp")); //17000
-			ins.writeMessage("a"); // 17000-17500
+		for (int in = 0; in < 10; in++) {
+
+			long endTime = System.currentTimeMillis();
+
+			for (int i = 0; i < 1000000; i++) {
+				ts.writeMessage("original");
+				// p.run(x -> x.writeMessage("proxy"));
+			}
+
+			Logger.Info("original Time : %s ", System.currentTimeMillis() - endTime);
+
+			endTime = System.currentTimeMillis();
+
+			for (int i = 0; i < 1000000; i++) {
+				// ts.writeMessage("original");
+				p.run(x -> x.writeMessage("proxy"));
+			}
+
+			Logger.Info("proxy Time : %s ", System.currentTimeMillis() - endTime);
+
 		}
 
-		final long endTime = System.currentTimeMillis();
-		System.out.println("Total execution time: " + (endTime - startTime));
-
-		// Proxy<TestService> p = new Proxy<TestService>(new TestService());
-		//Logger.Info(result);
 	}
 
 	/*

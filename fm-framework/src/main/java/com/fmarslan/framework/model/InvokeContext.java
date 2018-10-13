@@ -2,35 +2,44 @@ package com.fmarslan.framework.model;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
+import com.fmarslan.framework.enums.ResponseStatus;
+import com.fmarslan.framework.event.Action;
+import com.fmarslan.framework.management.FMApplication;
 import com.fmarslan.framework.system.FMConfiguration;
+import com.fmarslan.framework.system.RequestPool;
 
-public class InvokeContext<RESULT, SERVICE> implements Serializable {
+public class InvokeContext<SERVICE> implements Serializable {
 
 	private static final long serialVersionUID = -7600531320224326670L;
 
-	private HashMap<String, Long> timeSheets = new HashMap<>();
+	private Map<Integer, Long> timeSheets = new IdentityHashMap<>();
 
-	ResponseContext<RESULT> responseContext;
+	ResponseContext<Object> responseContext;
 	RequestContext<SERVICE> requestContext;
 	Throwable exception;
 	long createTime;
 
-	public static <R, S> InvokeContext<R, S> createContext(Class<R> resultType, S service, Method method,
-			Object[] args) {
-		return new InvokeContext<R, S>(resultType, service, method, args);
+	public void setConfigContext(Method method, Object[] args) {
+		requestContext.setConfigContext(method, args);
 	}
 
-	public InvokeContext(Class<RESULT> resultType, SERVICE service, Method method, Object[] args) {
-		requestContext = new RequestContext<SERVICE>(method, service, args);
-		responseContext = new ResponseContext<RESULT>();
+	public static <S> InvokeContext<S> createContext(String clazzName, S service, Action<Object, S> action) {
+		InvokeContext<S> context =  new InvokeContext<S>(clazzName, service, action);
+		RequestPool.createRequest(context);
+		return context;
+	}
+
+	public InvokeContext(String clazzName, SERVICE service, Action<Object, SERVICE> action) {
+		requestContext = new RequestContext<SERVICE>(Thread.currentThread().getId(), clazzName, service, action);
+		responseContext = new ResponseContext<Object>();
 		createTime = System.currentTimeMillis();
 	}
 
-	public ResponseContext<RESULT> getResponse() {
+	public ResponseContext<Object> getResponse() {
 		return responseContext;
 	}
 
@@ -44,25 +53,35 @@ public class InvokeContext<RESULT, SERVICE> implements Serializable {
 
 	public void setException(Throwable exception) {
 		this.exception = exception;
+		this.getResponse().setResponseStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	public Throwable getException() {
 		return exception;
 	}
 
-	public void startProcess(String key) {
+	public void startProcess(int key) {
 		if (FMConfiguration.isActiveProcessTimer())
 			timeSheets.put(key, System.currentTimeMillis());
 	}
-	
-	public void endProcess(String key) {
+
+	public void endProcess(int key) {
 		if (FMConfiguration.isActiveProcessTimer()) {
 			long time = timeSheets.get(key);
-			timeSheets.put(key, System.currentTimeMillis()-time);
+			timeSheets.put(key, System.currentTimeMillis() - time);
 		}
 	}
 	
-	public Map<String,Long> getTimeSheets(){
-		 return Collections.unmodifiableMap(timeSheets);
+	public void addTimeSheets(int key,Long time) {
+		if (FMConfiguration.isActiveProcessTimer())
+			timeSheets.put(key, time);
+	}
+
+	public Map<String, Long> getTimeSheets() {
+		HashMap<String, Long> resultMap = new HashMap<>();
+		timeSheets.entrySet().stream().forEach(x->{
+			resultMap.put(FMApplication.getProcessName(x.getKey()), x.getValue());
+		});
+		return resultMap;
 	}
 }

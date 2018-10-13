@@ -15,12 +15,14 @@ public class ResponseContext<RESULT> implements Serializable {
 	private Map<String, Object> parameters;
 
 	private RESULT data;
+	private String message;
 
 	public ResponseContext() {
 		parameters = new HashMap<String, Object>();
 	}
 
-	public void setData(RESULT data) {		
+	@SuppressWarnings("unchecked")
+	public void setData(Object data) {		
 		this.data = (RESULT)data;
 	}
 
@@ -51,5 +53,12 @@ public class ResponseContext<RESULT> implements Serializable {
 	
 	public boolean containsKey(String key) {
 		return parameters.containsKey(key);
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }
