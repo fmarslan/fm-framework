@@ -16,7 +16,7 @@ As my friend said if you need to comment, the code is mistake :) the code should
 
 # How to Use
 
-- Should added framework library to your project [for download click](https://github.com/fmarslan/fm-framework/raw/release/latest/fm-framework-latest.jar) [Maven](#Maven)
+- Should added framework library to your project [for download click](https://github.com/fmarslan/fm-framework/raw/release/latest/fm-framework-latest.jar) [Maven](#maven)
 - You should improve middleware classes from BaseMiddleware
 ~~~
 public class LoggingMiddleware extends BaseMiddleware{
