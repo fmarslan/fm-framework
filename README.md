@@ -20,7 +20,7 @@ As my friend said if you need to comment, the code is mistake :) the code should
 
 ### How to Use
 
-- Should added framework library to your project ([*download*](https://github.com/fmarslan/fm-framework/raw/release/latest/fm-framework-latest.jar) or [*Maven*](#Maven))
+- Should added framework library to your project ([*download*](https://raw.github.com/fmarslan/repository/com/fmarslan/fm-framework/latest/fm-framework-latest.jar) or [*Maven*](#Maven))
 - You should improve middleware classes from BaseMiddleware
 ~~~
 public class LoggingMiddleware extends BaseMiddleware{
