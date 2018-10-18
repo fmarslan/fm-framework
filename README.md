@@ -14,7 +14,47 @@ As my friend said if you need to comment, the code is mistake :) the code should
 * Can use all classes there is not any rule
 
 
-How to Use
+#How to Use
 
-- should added framework library to your project
+- Should added framework library to your project [for download click](https://github.com/fmarslan/fm-framework/raw/release/latest/fm-framework-latest.jar) [Maven](#Maven)
+- You should improve middleware classes from BaseMiddleware
+~~~
+public class LoggingMiddleware extends BaseMiddleware{
+	private static final long serialVersionUID = 4862224962026765025L;
+	
+	@Override
+	public void before(InvokeContext<?> context) {
+		. . .		
+	}	
+	@Override
+	public void after(InvokeContext<?> context) {
+		. . .
+	}
+}
+~~~
+- If you'll use custom exception handling, you should set your exception handling class to FMApplication
+- If you'll use custom response capsulation, you should set your capsulation class to FMApplication
+- You  add your middlewares you will use sequentially  by use FMAplication build method (for example FMAplication.build(new LoggingMiddleware()).build(new AuthMiddleware())).
+- You create instance of ProxyService for classes you will use
+- 
 
+
+
+#Maven
+
+~~~
+<repositories>
+	  . . .	 
+	<repository>
+		<id>myrepo</id>
+		<url>https://raw.github.com/fmarslan/repository/master</url>
+	</repository>
+	   . . .
+</repositories>
+
+<dependency>
+	<groupId>com.fmarslan</groupId>
+	<artifactId>fm-framework</artifactId>
+	<version>latest</version>
+</dependency>
+~~~
