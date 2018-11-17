@@ -40,7 +40,7 @@ public abstract class BaseMiddleware implements Serializable {
 		before(context);
 		context.endProcess(BEFORE_PROCESS);
 		if(next!=null) {
-			next.before(context);			
+			next.invoke(context);			
 		}else {
 			try {
 				context.startProcess(INVOKE_PROCESS);
