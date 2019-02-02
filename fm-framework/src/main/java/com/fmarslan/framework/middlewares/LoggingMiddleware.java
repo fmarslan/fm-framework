@@ -9,13 +9,12 @@ public class LoggingMiddleware extends BaseMiddleware{
 
 	@Override
 	public void before(InvokeContext<?> context) {
-			//Logger.Info("Request is processing for %s", context.getRequest().getMethod().getName());		
+	
 	}
 	
 	@Override
 	public void after(InvokeContext<?> context) {
 
-		//Logger.Info("Request processed for %s", context.getRequest().getMethod().getName());
 	}
 
 }

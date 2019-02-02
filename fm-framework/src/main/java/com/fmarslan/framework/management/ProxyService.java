@@ -38,7 +38,7 @@ public class ProxyService<SERVICE> {
 
 				@Override
 				public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-					InvokeContext<?> context = RequestPool.getCurrentContext();
+					InvokeContext<?> context = RequestPool.getContext();
 					context.setConfigContext(thisMethod, args);
 					FMApplication.current.invoke(context);
 					return context.getResponse().getData();
@@ -63,7 +63,7 @@ public class ProxyService<SERVICE> {
 			FMApplication.handleException(context);
 			return FMApplication.resultPackage(context);
 		} finally {
-			RequestPool.disposeCurrentRequest();
+			RequestPool.disposeRequest();
 			DebugLog.Info("%s request execute %s ms", clazzName, System.currentTimeMillis() - executeTimer);
 		}
 	}
@@ -80,7 +80,7 @@ public class ProxyService<SERVICE> {
 			FMApplication.handleException(context);
 			return (RESULT) context.getResponse().getData();
 		} finally {
-			RequestPool.disposeCurrentRequest();
+			RequestPool.disposeRequest();
 			DebugLog.Info("%s request execute plain %s ms", clazz.getCanonicalName(),
 					System.currentTimeMillis() - executeTimer);
 		}

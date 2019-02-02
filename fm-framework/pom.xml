@@ -12,8 +12,8 @@
 			<url>https://raw.github.com/fmarslan/repository/master</url>
 		</repository>
 	</repositories>
-	<artifactId>fm-framework</artifactId>
+	<artifactId>fm-middleware-framework</artifactId>
 	<name>fm-framework</name>
 	<url>http://fmarslan.com</url>
-	<version>1.0.0</version>
+	<version>1.0.0-alpha</version>
 </project>

@@ -1,8 +1,6 @@
 package com.fmarslan.framework.system;
 
 import java.io.Serializable;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fmarslan.framework.log.DebugLog;
@@ -14,54 +12,43 @@ public class RequestPool implements Serializable {
 
 	private static final long serialVersionUID = 6604424109248276730L;
 
-	static Map<Long, InvokeContext<?>> pool;
-	static InvokeContext<?> obj;
-	static int CREATE_REQUEST;
-	static int DISPOSE_REQUEST;
+	static ThreadLocal<InvokeContext<?>> context = new ThreadLocal<>();
+//	static int CREATE_REQUEST;
+//	static int DISPOSE_REQUEST;
 
 	static {
-		pool = new IdentityHashMap<>();
-		CREATE_REQUEST =FMApplication.addProcess("Create Request");
-		DISPOSE_REQUEST =FMApplication.addProcess("Dispose Request");
+//		CREATE_REQUEST = FMApplication.addProcess("Create Request");
+//		DISPOSE_REQUEST = FMApplication.addProcess("Dispose Request");
 	}
 
-	public static void createRequest(InvokeContext<?> context) {
-		
-		 context.startProcess(CREATE_REQUEST);
+	public static void createRequest(InvokeContext<?> c) {
+
+//		c.startProcess(CREATE_REQUEST);
 		try {
-			long requestId = Thread.currentThread().getId();
-			 pool.put(requestId, context);
-			obj = context;
+			context.set(c);
 		} finally {
-			 context.endProcess(CREATE_REQUEST);
+//			c.endProcess(CREATE_REQUEST);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <SERVICE> InvokeContext<SERVICE> getContext(long id) {
-		 return (InvokeContext<SERVICE>) pool.get(id);
+	public static <SERVICE> InvokeContext<SERVICE> getContext() {
+		return (InvokeContext<SERVICE>) context.get();
 	}
 
-	public static <SERVICE> InvokeContext<SERVICE> getCurrentContext() {
-		return getContext(Thread.currentThread().getId());
-	}
-
-	public static void disposeRequest(InvokeContext<?> context) {
-		context.startProcess(DISPOSE_REQUEST);
+	public static void disposeRequest() {
+		InvokeContext<?> c = getContext();
+//		c.startProcess(DISPOSE_REQUEST);
 		try {
-//			long requestId = context.getRequest().getRequestId();
-			pool.remove(context.getRequest().getRequestId());
+			// long requestId = context.getRequest().getRequestId();
+			context.remove();
 		} finally {
-			context.endProcess(DISPOSE_REQUEST);
+//			c.endProcess(DISPOSE_REQUEST);
 			if (FMApplication.isDebug()) {
-				for (Entry<String, Long> item : context.getTimeSheets().entrySet()) {
+				for (Entry<String, Long> item : c.getTimeSheets().entrySet()) {
 					DebugLog.Log(LogType.INFO, "%s : %s", item.getValue(), item.getKey());
 				}
 			}
 		}
-	}
-
-	public static void disposeCurrentRequest() {
-		disposeRequest(getCurrentContext());
 	}
 }
