@@ -74,18 +74,9 @@ p.run(x -> x.writeMessage("proxy"));
 ### Maven
 
 ~~~
-<repositories>
-	  . . .	 
-	<repository>
-		<id>myrepo</id>
-		<url>https://raw.github.com/fmarslan/repository/master</url>
-	</repository>
-	   . . .
-</repositories>
-
 <dependency>
 	<groupId>com.fmarslan</groupId>
 	<artifactId>fm-framework</artifactId>
-	<version>latest</version>
+	<version>1.0.0</version>
 </dependency>
 ~~~
