@@ -1,7 +1,9 @@
-
-/target/
-.classpath
-/.settings/
-.project
-target
-.settings/
+**/target/
+**/.classpath
+**/.gitignore
+**/.project
+**/.settings/
+**/.classpath
+**/.project
+**/.settings/
+**/target/

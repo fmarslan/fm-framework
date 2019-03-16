@@ -4,16 +4,58 @@
 	<parent>
 		<groupId>com.fmarslan</groupId>
 		<artifactId>fm-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2-1</version>
 	</parent>
-	<repositories>
-		<repository>
-			<id>myrepo</id>
-			<url>https://raw.github.com/fmarslan/repository/master</url>
-		</repository>
-	</repositories>
 	<artifactId>fm-middleware-framework</artifactId>
-	<name>fm-framework</name>
-	<url>http://fmarslan.com</url>
-	<version>1.0.0-alpha</version>
+	<version>1.0.0</version>
+	<name>FM Framework</name>
+	<description>Middleware Framework</description>
+	<url>https://github.com/fmarslan</url>
+	<licenses>
+	  <license>
+		<name>The Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	  </license>
+	</licenses>
+	<developers>
+    <developer>
+		<name>Fatih Mehmet ARSLAN</name>
+			<email>contact@fmarslan.com</email>
+			<organization>fmarslan</organization>
+			<organizationUrl>https://github.com/fmarslan</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git://github.com/fmarslan/fm-framework.git</connection>
+		<developerConnection>scm:git:ssh://github.com:fmarslan/fm-framework.git</developerConnection>
+		<url>https://github.com/fmarslan/fm-framework</url>
+	</scm>
+	<properties>
+		<java.assist.version>3.23.1-GA</java.assist.version>
+		<java.version>1.8</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>${java.assist.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
